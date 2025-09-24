@@ -1,0 +1,27 @@
+/* Plain CSS test file */
+.custom-test-heading {
+  font-size: 32px;
+  color: purple;
+  text-decoration: underline;
+  margin-bottom: 20px;
+}
+
+.custom-test-container {
+  border: 3px dashed orange;
+  padding: 20px;
+  margin-top: 30px;
+}
+
+.custom-test-button {
+  background-color: lime;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.custom-test-button:hover {
+  background-color: darkgreen;
+  color: white;
+}

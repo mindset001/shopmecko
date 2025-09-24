@@ -1,103 +1,193 @@
 import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { safelySetStyle } from "@/lib/dom-utils";
+import NavigationBar from "@/components/ui/navigation-bar";
+import InteractiveLink from "@/components/ui/interactive-link";
+import ServiceItem from "@/components/ui/service-item";
+import TestimonialCard from "@/components/ui/testimonial-card";
+import CtaSection from "@/components/ui/cta-section";
+import CtaButton from "@/components/ui/cta-button";
+import HowItWorksSection from "@/components/ui/how-it-works-section";
+import SimpleHeroSection from "@/components/ui/simple-hero-section";
+import TailwindTest from "@/components/tailwind-test";
+import { Footer } from "@/components/ui/footer";
+import { Header } from "@/components/ui/header";
+import EnhancedHeroSection from "@/components/ui/enhanced-hero-section";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', overflow: 'hidden' }}>
+      {/* Header Component */}
+      <Header />
+      
+      {/* Spacer to prevent content from hiding under fixed header */}
+      <div style={{ height: '4rem' }}></div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <main style={{ display: 'flex', flexDirection: 'column', flex: '1' }}>
+        {/* Simple Hero Section without the header */}
+        <div style={{ marginTop: '-4rem' }}>
+          <SimpleHeroSection />
         </div>
+
+        {/* Features Section */}
+        <section id="features" style={{ 
+          padding: '6rem 0',
+          backgroundColor: '#ffffff',
+          overflow: 'hidden'
+        }}>
+          <div style={{ 
+            maxWidth: '1200px',
+            margin: '0 auto',
+            padding: '0 1rem'
+          }}>
+            <div style={{ 
+              textAlign: 'center', 
+              marginBottom: '4rem' 
+            }} className="animate-fade-in-up">
+              <h2 style={{ 
+                fontSize: '2.5rem',
+                fontWeight: '700',
+                marginBottom: '1rem',
+                color: '#1e3a8a',
+                display: 'inline-block',
+                position: 'relative'
+              }}>
+                Why Choose ShopMeco?
+                <span style={{ 
+                  position: 'absolute',
+                  bottom: '-0.5rem',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '6rem',
+                  height: '0.25rem',
+                  backgroundColor: '#0071ff',
+                  borderRadius: '9999px'
+                }}></span>
+              </h2>
+              <p style={{ 
+                fontSize: '1.25rem',
+                color: '#6b7280',
+                maxWidth: '48rem',
+                margin: '1.5rem auto 0'
+              }}>
+                A comprehensive solution for all your vehicle service needs
+              </p>
+            </div>
+            
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+              gap: '2rem'
+            }}>
+              {/* Feature 1 */}
+              <ServiceItem 
+                imageSrc="/car-mechanic-service.jpg"
+                title="Expert Mechanics"
+                description="Connect with certified mechanics who have years of experience with a wide variety of vehicle makes and models."
+              />
+              
+              {/* Feature 2 */}
+              <ServiceItem 
+                imageSrc="/car-parts.jpg"
+                title="Quality Parts"
+                description="Access genuine or OEM-equivalent parts from trusted suppliers for your vehicle repairs and maintenance."
+              />
+              
+              {/* Feature 3 */}
+              <ServiceItem 
+                imageSrc="/car-maintenance.jpg"
+                title="Scheduled Maintenance"
+                description="Set up regular maintenance schedules and get reminders when your vehicle needs servicing."
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* How It Works Section */}
+        <HowItWorksSection />
+
+        {/* Testimonials Section */}
+        <section id="testimonials" style={{ 
+          padding: '6rem 0',
+          backgroundColor: '#ffffff',
+          overflow: 'hidden'
+        }}>
+          <div style={{ 
+            maxWidth: '1200px',
+            margin: '0 auto',
+            padding: '0 1rem'
+          }}>
+            <div style={{ 
+              textAlign: 'center', 
+              marginBottom: '4rem' 
+            }} className="animate-fade-in-up">
+              <h2 style={{ 
+                fontSize: '2.5rem',
+                fontWeight: '700',
+                marginBottom: '1rem',
+                color: '#1e3a8a',
+                display: 'inline-block',
+                position: 'relative'
+              }}>
+                What Our Customers Say
+                <span style={{ 
+                  position: 'absolute',
+                  bottom: '-0.5rem',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '6rem',
+                  height: '0.25rem',
+                  backgroundColor: '#0071ff',
+                  borderRadius: '9999px'
+                }}></span>
+              </h2>
+              <p style={{ 
+                fontSize: '1.25rem',
+                color: '#6b7280',
+                maxWidth: '48rem',
+                margin: '1.5rem auto 0'
+              }}>
+                Don't take our word for it, hear what our users have to say
+              </p>
+            </div>
+            
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+              gap: '2rem'
+            }}>
+              {/* Testimonial 1 */}
+              <TestimonialCard
+                quote="ShopMeco made finding a reliable mechanic so easy. The service was excellent and the price was fair."
+                author="James Wilson"
+                role="Toyota Owner"
+              />
+              
+              {/* Testimonial 2 */}
+              <TestimonialCard
+                quote="I love how I can track all my vehicle's maintenance history in one place. The reminders are a lifesaver!"
+                author="Sarah Johnson"
+                role="Honda Owner"
+              />
+              
+              {/* Testimonial 3 */}
+              <TestimonialCard
+                quote="As a mechanic, ShopMeco has helped me connect with new customers and grow my business steadily."
+                author="Michael Brown"
+                role="Certified Mechanic"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <CtaSection />
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

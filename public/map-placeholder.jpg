@@ -1,0 +1,6 @@
+// This file would contain a base64-encoded map image placeholder
+// For this demo, we'll use a sample map image from an online source
+// In a real implementation, you would generate a static map image 
+// or integrate with a mapping service API like Google Maps, Mapbox, or Leaflet
+
+// The file will be served from the public directory

@@ -1,26 +1,238 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+ 
+    --primary: 210 100% 50%;  /* ShopMeco Blue */
+    --primary-foreground: 210 40% 98%;
+ 
+    --secondary: 48 100% 50%;  /* ShopMeco Yellow */
+    --secondary-foreground: 222.2 47.4% 11.2%;
+ 
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+ 
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+ 
+    --radius: 0.5rem;
+
+    /* ShopMeco Colors Direct CSS Variables */
+    --shopmeco-blue: #0071ff;
+    --shopmeco-yellow: #ffd700;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+ 
+    --popover: 224 71% 4%;
+    --popover-foreground: 213 31% 91%;
+ 
+    --primary: 210 100% 50%; /* ShopMeco Blue */
+    --primary-foreground: 222.2 47.4% 11.2%;
+ 
+    --secondary: 48 100% 50%; /* ShopMeco Yellow */
+    --secondary-foreground: 222.2 47.4% 1.2%;
+ 
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+ 
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+ 
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+    --ring: 213 31% 91%;
+
+    /* ShopMeco Colors Direct CSS Variables */
+    --shopmeco-blue: #0062db;
+    --shopmeco-yellow: #ffd700;
   }
 }
 
+/* Base styles */
+.border-border {
+  border-color: hsl(var(--border));
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* ShopMeco Custom Utility Classes */
+.bg-shopmeco-blue {
+  background-color: var(--shopmeco-blue);
+}
+
+.bg-shopmeco-yellow {
+  background-color: var(--shopmeco-yellow);
+}
+
+.text-shopmeco-blue {
+  color: var(--shopmeco-blue);
+}
+
+.text-shopmeco-yellow {
+  color: var(--shopmeco-yellow);
+}
+
+.border-shopmeco-blue {
+  border-color: var(--shopmeco-blue);
+}
+
+.border-shopmeco-yellow {
+  border-color: var(--shopmeco-yellow);
+}
+
+.hover\:bg-shopmeco-blue:hover {
+  background-color: var(--shopmeco-blue);
+}
+
+.hover\:bg-shopmeco-yellow:hover {
+  background-color: var(--shopmeco-yellow);
+}
+
+/* Glassmorphism effects */
+.glass-effect {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.glass-card {
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.glass-input {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.glass-input:focus {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.glass-button {
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.glass-container {
+  position: relative;
+}
+
+.glass-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -10;
+  background: linear-gradient(to bottom right, rgba(59, 130, 246, 0.2), rgba(124, 58, 237, 0.2));
+  backdrop-filter: blur(24px);
+}
+
+.auth-background {
+  background: linear-gradient(to bottom right, rgba(59, 130, 246, 0.4), rgba(124, 58, 237, 0.4));
+}
+
+/* Animations for glassmorphic effects */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-gradient {
+  animation: gradientShift 8s ease infinite;
+  background-size: 200% 200%;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 25%,
+    rgba(255, 255, 255, 0.2) 75%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
 }
