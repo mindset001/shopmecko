@@ -24,7 +24,7 @@ export async function connectToDatabase() {
       console.log('✅ Connected to MongoDB successfully');
     }
     return mongoose.connection;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ MongoDB connection error:', error);
     process.exit(1); // Exit with failure
   }
@@ -37,7 +37,7 @@ export async function disconnectFromDatabase() {
   try {
     await mongoose.disconnect();
     console.log('✅ Disconnected from MongoDB');
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ Error disconnecting from MongoDB:', error);
   }
 }

@@ -33,7 +33,7 @@ async function apiRequest(url: string, options: RequestInit = {}) {
     }
 
     return data;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('API request failed:', error);
     throw error;
   }
@@ -88,9 +88,10 @@ export const authApi = {
   async getCurrentUser() {
     try {
       return await apiRequest('/api/users/me');
-    } catch (error) {
+    } catch (error: unknown) {
       // If unauthorized, return null instead of throwing
-      if (error.message.includes('Unauthorized') || error.message.includes('Authentication required')) {
+      if (error instanceof Error && 
+         (error.message.includes('Unauthorized') || error.message.includes('Authentication required'))) {
         return null;
       }
       throw error;

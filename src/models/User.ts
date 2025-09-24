@@ -96,8 +96,8 @@ userSchema.pre('save', async function (next) {
     // Hash the password using the salt
     this.password = await bcrypt.hash(this.password, salt);
     next();
-  } catch (error: any) {
-    next(error);
+  } catch (error: unknown) {
+    next(error instanceof Error ? error : new Error('Unknown error during password hashing'));
   }
 });
 
@@ -105,7 +105,7 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
   try {
     return await bcrypt.compare(candidatePassword, this.password);
-  } catch (error) {
+  } catch (error: unknown) {
     throw new Error('Error comparing passwords');
   }
 };

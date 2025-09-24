@@ -50,7 +50,7 @@ export function withAuth(
       let decodedToken: JwtPayload;
       try {
         decodedToken = jwt.verify(token as string, JWT_SECRET) as JwtPayload;
-      } catch (error) {
+      } catch (error: unknown) {
         return NextResponse.json(
           { error: 'Invalid or expired token' },
           { status: 401 }
@@ -67,7 +67,7 @@ export function withAuth(
 
       // Call handler with user data
       return handler(req, decodedToken);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Auth middleware error:', error);
       return NextResponse.json(
         { error: 'Internal server error' },
