@@ -36,7 +36,7 @@ export default function CtaSection() {
             marginBottom: '0.75rem',
             color: 'rgba(255, 255, 255, 0.95)'
           }}>
-            Whether you're a vehicle owner seeking service, a repair specialist, or a parts seller, 
+            Whether you&apos;re a vehicle owner seeking service, a repair specialist, or a parts seller, 
             ShopMeco connects everyone in the automotive ecosystem.
           </p>
           <p style={{

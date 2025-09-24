@@ -5,7 +5,7 @@ import { withAuth } from '@/lib/auth';
 import { validateData, handleApiError } from '@/lib/api-utils';
 import { ServiceRequest, MaintenanceRecord, Vehicle } from '@/models';
 
-// Define type for the JWT payload user from auth.ts
+// Define type for the JWT payload
 interface JwtPayload {
   userId: string;
   email: string;
@@ -47,15 +47,20 @@ const completeServiceRequestSchema = z.object({
 });
 
 /**
+ * Helper function to extract the service request ID from the URL
+ */
+function extractServiceRequestId(req: NextRequest): string {
+  const path = req.nextUrl.pathname;
+  return path.split('/').pop() || '';
+}
+
+/**
  * GET: Get a specific service request
  */
 async function getServiceRequest(req: NextRequest, user?: JwtPayload) {
-  // Extract the service request ID from the URL path
-  const path = req.nextUrl.pathname;
-  const serviceRequestId = path.split('/').pop() || '';
-  
   try {
     await connectToDatabase();
+    const serviceRequestId = extractServiceRequestId(req);
     
     // Find service request
     const serviceRequest = await ServiceRequest.findById(serviceRequestId)
@@ -101,12 +106,9 @@ async function getServiceRequest(req: NextRequest, user?: JwtPayload) {
  * PUT: Update a service request
  */
 async function updateServiceRequest(req: NextRequest, user?: JwtPayload) {
-  // Extract the service request ID from the URL path
-  const path = req.nextUrl.pathname;
-  const serviceRequestId = path.split('/').pop() || '';
-  
   try {
     await connectToDatabase();
+    const serviceRequestId = extractServiceRequestId(req);
     
     // Find service request
     const serviceRequest = await ServiceRequest.findById(serviceRequestId);
@@ -118,7 +120,10 @@ async function updateServiceRequest(req: NextRequest, user?: JwtPayload) {
       );
     }
     
-    // Ensure user is defined
+    // Validate request data
+    const body = await validateData(req, updateServiceRequestSchema);
+    
+    // Check permissions
     if (!user) {
       return NextResponse.json(
         { error: 'Authentication required' },
@@ -126,70 +131,56 @@ async function updateServiceRequest(req: NextRequest, user?: JwtPayload) {
       );
     }
     
-    // Check permissions based on user role and request status
-    let hasPermission = false;
-    
-    if (user.role === 'admin') {
-      // Admins can update any service request
-      hasPermission = true;
-    } else if (serviceRequest.ownerId.toString() === user.userId) {
-      // Owners can update their requests if not already accepted
-      hasPermission = ['pending', 'cancelled'].includes(serviceRequest.status);
-    } else if (user.role === 'repairer') {
-      // Repairers can update requests assigned to them or accept pending requests
-      const body = await req.json();
-      const isAccepting = body.status === 'accepted' && serviceRequest.status === 'pending';
+    // Admin can update anything
+    if (user.role === 'ADMIN') {
+      // Allow full updates
+    } 
+    // Vehicle owner can update their own service requests
+    else if (serviceRequest.ownerId.toString() === user.userId) {
+      // Only allow updating status to cancelled
+      if (body.status && body.status !== 'cancelled') {
+        delete body.status;
+      }
+    } 
+    // Repairer can update service requests they're assigned to
+    else if (user.role === 'REPAIRER') {
+      // Check if this repairer is assigned to this service request
+      // or if they're accepting a new one (and none is assigned yet)
+      const canUpdate = 
+        (serviceRequest.repairerId?.toString() === user.userId) ||
+        (body.status === 'accepted' && !serviceRequest.repairerId);
       
-      hasPermission = 
-        (serviceRequest.repairerId?.toString() === user.userId) || 
-        (isAccepting && !serviceRequest.repairerId);
+      if (!canUpdate) {
+        return NextResponse.json(
+          { error: 'You are not authorized to update this service request' },
+          { status: 403 }
+        );
+      }
       
-      // If a repairer is accepting a new request, assign it to them
-      if (isAccepting && !serviceRequest.repairerId) {
+      // If repairer is accepting the request, assign them
+      if (body.status === 'accepted' && !serviceRequest.repairerId) {
         body.repairerId = user.userId;
       }
-    }
-    
-    if (!hasPermission) {
+    } else {
       return NextResponse.json(
-        { error: 'You do not have permission to update this service request' },
+        { error: 'You are not authorized to update this service request' },
         { status: 403 }
       );
     }
     
-    // Parse and validate request body
-    const body = await req.json();
-    const validatedData = validateData(body, updateServiceRequestSchema);
-    
-    // Format coordinates for MongoDB if they exist
-    if (validatedData.location?.coordinates) {
-      // Create a properly typed coordinates object
-      const geoCoordinates = {
-        longitude: validatedData.location.coordinates.longitude,
-        latitude: validatedData.location.coordinates.latitude
+    // If updating location with coordinates
+    if (body.location?.coordinates) {
+      // GeoJSON format for MongoDB
+      body.location.coordinates = {
+        latitude: body.location.coordinates.latitude,
+        longitude: body.location.coordinates.longitude,
       };
-      validatedData.location.coordinates = geoCoordinates;
     }
     
-    // Handle service completion
-    if (validatedData.status === 'completed' && serviceRequest.status !== 'completed') {
-      // Service has just been marked as completed
-      
-      // Validate completion data
-      if (!validatedData.finalCost) {
-        return NextResponse.json(
-          { error: 'Final cost is required when completing a service' },
-          { status: 400 }
-        );
-      }
-      
-      validatedData.actualCompletionDate = new Date();
-    }
-    
-    // Update the service request
+    // Update service request
     const updatedServiceRequest = await ServiceRequest.findByIdAndUpdate(
       serviceRequestId,
-      { $set: validatedData },
+      { $set: body },
       { new: true, runValidators: true }
     );
     
@@ -203,15 +194,13 @@ async function updateServiceRequest(req: NextRequest, user?: JwtPayload) {
  * POST: Complete a service request and create maintenance record
  */
 async function completeServiceRequest(req: NextRequest, user?: JwtPayload) {
-  // Extract the service request ID from the URL path
-  const path = req.nextUrl.pathname;
-  const serviceRequestId = path.split('/').pop() || '';
-  
   try {
     await connectToDatabase();
+    const serviceRequestId = extractServiceRequestId(req);
     
     // Find service request
-    const serviceRequest = await ServiceRequest.findById(serviceRequestId);
+    const serviceRequest = await ServiceRequest.findById(serviceRequestId)
+      .populate('vehicleId');
     
     if (!serviceRequest) {
       return NextResponse.json(
@@ -220,23 +209,26 @@ async function completeServiceRequest(req: NextRequest, user?: JwtPayload) {
       );
     }
     
-    // Check if request can be completed
-    if (serviceRequest.status === 'completed') {
+    // Check if service request is in progress
+    if (serviceRequest.status !== 'in-progress') {
       return NextResponse.json(
-        { error: 'Service request is already completed' },
+        { error: 'Only in-progress service requests can be completed' },
         { status: 400 }
       );
     }
     
-    if (serviceRequest.status === 'cancelled') {
+    // Validate request data
+    const body = await validateData(req, completeServiceRequestSchema);
+    
+    // Check permissions - only assigned repairer can complete
+    if (!user) {
       return NextResponse.json(
-        { error: 'Cannot complete a cancelled service request' },
-        { status: 400 }
+        { error: 'Authentication required' },
+        { status: 401 }
       );
     }
     
-    // Check permissions
-    if (!user || user.role !== 'repairer' || 
+    if (user.role !== 'REPAIRER' ||
         serviceRequest.repairerId?.toString() !== user.userId) {
       return NextResponse.json(
         { error: 'Only the assigned repairer can complete this service request' },
@@ -244,40 +236,39 @@ async function completeServiceRequest(req: NextRequest, user?: JwtPayload) {
       );
     }
     
-    // Parse and validate request body
-    const body = await req.json();
-    const validatedData = validateData(body, completeServiceRequestSchema);
-    
     // Create maintenance record
     const maintenanceRecord = await MaintenanceRecord.create({
-      vehicleId: serviceRequest.vehicleId,
-      serviceDate: validatedData.serviceDate,
+      vehicleId: serviceRequest.vehicleId._id,
+      serviceDate: body.serviceDate,
       serviceType: serviceRequest.serviceType,
       description: serviceRequest.description,
-      mileage: validatedData.mileage,
-      cost: validatedData.finalCost,
-      serviceProvider: serviceRequest.repairerId,
+      mileage: body.mileage,
+      cost: body.finalCost,
+      workshopId: serviceRequest.repairerId,
       serviceRequestId: serviceRequest._id,
-      receipts: validatedData.receipts || [],
-      notes: validatedData.notes,
+      attachments: body.receipts,
+      createdAt: new Date()
     });
     
     // Update service request
     const updatedServiceRequest = await ServiceRequest.findByIdAndUpdate(
       serviceRequestId,
       { 
-        status: 'completed',
-        finalCost: validatedData.finalCost,
-        actualCompletionDate: new Date(),
-        maintenanceRecordId: maintenanceRecord._id
+        $set: { 
+          status: 'completed',
+          finalCost: body.finalCost,
+          actualCompletionDate: new Date(),
+          maintenanceRecordId: maintenanceRecord._id,
+          notes: body.notes,
+        } 
       },
       { new: true }
     );
     
-    // Update vehicle maintenance history
+    // Update vehicle's maintenance history
     await Vehicle.findByIdAndUpdate(
-      serviceRequest.vehicleId,
-      { $addToSet: { maintenanceHistory: maintenanceRecord._id } }
+      serviceRequest.vehicleId._id,
+      { $push: { maintenanceHistory: maintenanceRecord._id } }
     );
     
     return NextResponse.json({
@@ -293,12 +284,9 @@ async function completeServiceRequest(req: NextRequest, user?: JwtPayload) {
  * DELETE: Cancel a service request
  */
 async function cancelServiceRequest(req: NextRequest, user?: JwtPayload) {
-  // Extract the service request ID from the URL path
-  const path = req.nextUrl.pathname;
-  const serviceRequestId = path.split('/').pop() || '';
-  
   try {
     await connectToDatabase();
+    const serviceRequestId = extractServiceRequestId(req);
     
     // Find service request
     const serviceRequest = await ServiceRequest.findById(serviceRequestId);
@@ -310,22 +298,15 @@ async function cancelServiceRequest(req: NextRequest, user?: JwtPayload) {
       );
     }
     
-    // Check if request can be cancelled
-    if (serviceRequest.status === 'completed') {
+    // Check if service request can be cancelled
+    if (['completed', 'cancelled'].includes(serviceRequest.status)) {
       return NextResponse.json(
-        { error: 'Cannot cancel a completed service request' },
+        { error: `Service request is already ${serviceRequest.status}` },
         { status: 400 }
       );
     }
     
-    if (serviceRequest.status === 'cancelled') {
-      return NextResponse.json(
-        { error: 'Service request is already cancelled' },
-        { status: 400 }
-      );
-    }
-    
-    // Ensure user is defined
+    // Check permissions
     if (!user) {
       return NextResponse.json(
         { error: 'Authentication required' },
@@ -333,39 +314,36 @@ async function cancelServiceRequest(req: NextRequest, user?: JwtPayload) {
       );
     }
     
-    // Check permissions
-    const hasPermission = 
-      user.role === 'admin' || 
-      serviceRequest.ownerId.toString() === user.userId || 
-      (serviceRequest.repairerId?.toString() === user.userId && user.role === 'repairer');
+    const hasAccess = 
+      user.role === 'ADMIN' ||
+      serviceRequest.ownerId.toString() === user.userId ||
+      (serviceRequest.repairerId?.toString() === user.userId && user.role === 'REPAIRER');
     
-    if (!hasPermission) {
+    if (!hasAccess) {
       return NextResponse.json(
-        { error: 'You do not have permission to cancel this service request' },
+        { error: 'You are not authorized to cancel this service request' },
         { status: 403 }
       );
     }
     
-    // Cancel the service request
+    // Cancel service request
     const updatedServiceRequest = await ServiceRequest.findByIdAndUpdate(
       serviceRequestId,
-      { status: 'cancelled' },
+      { $set: { status: 'cancelled' } },
       { new: true }
     );
     
-    return NextResponse.json({
-      message: 'Service request cancelled successfully',
-      serviceRequest: updatedServiceRequest
-    });
+    return NextResponse.json(updatedServiceRequest);
   } catch (error) {
     return handleApiError(error);
   }
 }
 
+// Export handlers with authentication middleware
 export const GET = withAuth(getServiceRequest, { requiresAuth: true });
 export const PUT = withAuth(updateServiceRequest, { requiresAuth: true });
-export const POST = withAuth(completeServiceRequest, { 
+export const POST = withAuth(completeServiceRequest, {
   requiresAuth: true,
-  allowedRoles: ['repairer'] 
+  allowedRoles: ['REPAIRER']
 });
 export const DELETE = withAuth(cancelServiceRequest, { requiresAuth: true });

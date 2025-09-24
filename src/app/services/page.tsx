@@ -245,7 +245,7 @@ export default function Services() {
                     </svg>
                   }
                   title="Cost Comparison"
-                  description="Compare service prices from different providers to ensure you're getting the best value for your money."
+                  description="Compare service prices from different providers to ensure you&apos;re getting the best value for your money."
                 />
               </div>
             </div>
@@ -492,7 +492,7 @@ export default function Services() {
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold mb-4">What Our Users Say</h2>
               <p className="text-xl text-gray-500 dark:text-gray-400 max-w-3xl mx-auto">
-                Don't just take our word for it - hear from the people who use ShopMeco every day
+                Don&apos;t just take our word for it - hear from the people who use ShopMeco every day
               </p>
             </div>
 
@@ -503,7 +503,7 @@ export default function Services() {
                 className={`transition-all duration-700 ${isVisible['testimonial-1'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
               >
                 <TestimonialCard
-                  quote="ShopMeco has completely changed how I maintain my vehicles. Finding reliable mechanics used to be a nightmare, but now it's just a few clicks away."
+                  quote="ShopMeco has completely changed how I maintain my vehicles. Finding reliable mechanics used to be a nightmare, but now it&apos;s just a few clicks away."
                   name="Michael Johnson"
                   role="Vehicle Owner"
                   image="/hero-car-service.jpg"

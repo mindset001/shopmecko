@@ -13,7 +13,7 @@ interface SettingsLayoutProps {
     label: string;
     component: React.ReactNode;
   }[];
-  onSave: (data: any) => Promise<void>;
+  onSave: (data: unknown) => Promise<void>;
   isSaving?: boolean;
   saveSuccess?: boolean;
   saveError?: string;

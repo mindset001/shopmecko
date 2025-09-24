@@ -102,7 +102,9 @@ export default function RepairerProfilePage() {
     fetchProfileData();
   }, [user]);
 
-  const handleSaveProfile = async (updatedProfile: RepairerProfile) => {
+  const handleSaveProfile = async (data: unknown) => {
+    const updatedProfile = data as RepairerProfile;
+    
     // In a real app, send this data to your API
     console.log('Saving profile:', updatedProfile);
     

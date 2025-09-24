@@ -86,7 +86,10 @@ export default function SellerProfilePage() {
     fetchProfileData();
   }, [user]);
 
-  const handleSaveProfile = async (updatedProfile: SellerProfile) => {
+  const handleSaveProfile = async (data: unknown) => {
+    // Cast the unknown data to SellerProfile
+    const updatedProfile = data as SellerProfile;
+    
     // In a real app, send this data to your API
     console.log('Saving profile:', updatedProfile);
     

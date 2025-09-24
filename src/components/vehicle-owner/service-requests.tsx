@@ -24,7 +24,7 @@ export default function ServiceRequests() {
         // Fetch vehicles to display vehicle details in requests
         const vehiclesData = await api.vehicles.getVehicles();
         setVehicles(vehiclesData.vehicles || []);
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError(err.message || 'An error occurred while fetching data');
         console.error('Error fetching data:', err);
       } finally {
@@ -64,7 +64,7 @@ export default function ServiceRequests() {
       
       // Show success message
       alert('Service request submitted successfully!');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error submitting service request:', err);
       alert('Failed to submit service request. Please try again.');
     }

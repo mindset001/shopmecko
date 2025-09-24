@@ -197,7 +197,7 @@ export default function FindMechanics() {
           setRepairers(uniqueRepairers);
           setIsLoading(false);
         }, 1000);
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError('Failed to load mechanics. Please try again later.');
         setIsLoading(false);
       }

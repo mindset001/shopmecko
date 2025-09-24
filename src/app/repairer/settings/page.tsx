@@ -71,7 +71,56 @@ export default function RepairerSettingsPage() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState('');
   
-  const handleSave = async (data: any) => {
+  // Define FormData type based on the state structure
+  type FormDataType = {
+    language: string;
+    timezone: string;
+    dateFormat: string;
+    contactEmail: string;
+    address: string;
+    twoFactorEnabled: boolean;
+    loginNotifications: boolean;
+    sessionTimeout: string;
+    deviceManagement: {
+      currentDevice: {
+        name: string;
+        lastActive: string;
+        location: string;
+      }
+    };
+    notifications: {
+      account: { email: boolean; push: boolean; sms: boolean };
+      updates: { email: boolean; push: boolean; sms: boolean };
+      promotions: { email: boolean; push: boolean; sms: boolean };
+      security: { email: boolean; push: boolean; sms: boolean };
+      serviceUpdates: { email: boolean; push: boolean; sms: boolean };
+    };
+    notificationPreferences: {
+      digestEmails: boolean;
+      quietHours: boolean;
+    };
+    appearance: {
+      theme: string;
+      fontSize: string;
+      reducedMotion: boolean;
+      highContrast: boolean;
+      compactView: boolean;
+    };
+    repairerSettings: {
+      serviceArea: number;
+      autoAcceptBookings: boolean;
+      showAvailableSlots: boolean;
+      offerMobileService: boolean;
+      offerPickupService: boolean;
+      autoOrderParts: boolean;
+      instantQuotes: boolean;
+      diagnosticToolIntegration: boolean;
+      blockBookingSlots: number;
+      minimumLeadTime: number;
+    };
+  };
+  
+  const handleSave = async (data: FormDataType) => {
     setIsSaving(true);
     setSaveError('');
     

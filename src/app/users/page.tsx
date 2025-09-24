@@ -63,8 +63,8 @@ export default function UsersPage() {
       
       // Refresh user list
       fetchUsers();
-    } catch (err: any) {
-      setError(err.message || 'Error adding user. Please try again.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error adding user. Please try again.');
       console.error(err);
     }
   };

@@ -7,7 +7,7 @@ export default function HowItWorksSection() {
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
-    // Check if we're on client-side
+    // Check if we&apos;re on client-side
     if (typeof window !== 'undefined') {
       // Function to update state based on window width
       const updateScreenSize = () => {
@@ -114,7 +114,7 @@ export default function HowItWorksSection() {
               color: '#6B7280',
               lineHeight: '1.6',
             }}>
-              Create an account and add your vehicle details. We'll keep track of your service history.
+              Create an account and add your vehicle details. We&apos;ll keep track of your service history.
             </p>
           </div>
 

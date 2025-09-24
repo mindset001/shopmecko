@@ -143,7 +143,7 @@ export default function OrderManagement() {
 
         setOrders(mockOrders);
         setIsLoading(false);
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError(err.message || 'An error occurred while fetching orders');
         setIsLoading(false);
       }

@@ -144,7 +144,7 @@ export default function InventoryManagement() {
 
         setProducts(mockProducts);
         setIsLoading(false);
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError(err.message || 'An error occurred while fetching products');
         setIsLoading(false);
       }

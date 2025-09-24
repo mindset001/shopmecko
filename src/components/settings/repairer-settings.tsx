@@ -1,13 +1,88 @@
 'use client';
 
+// Define FormData type based on the state structure
+type FormDataType = {
+  language: string;
+  timezone: string;
+  dateFormat: string;
+  contactEmail: string;
+  address: string;
+  twoFactorEnabled: boolean;
+  loginNotifications: boolean;
+  sessionTimeout: string;
+  deviceManagement: {
+    currentDevice: {
+      name: string;
+      lastActive: string;
+      location: string;
+    }
+  };
+  notifications: {
+    account: { email: boolean; push: boolean; sms: boolean };
+    updates: { email: boolean; push: boolean; sms: boolean };
+    promotions: { email: boolean; push: boolean; sms: boolean };
+    security: { email: boolean; push: boolean; sms: boolean };
+    serviceUpdates: { email: boolean; push: boolean; sms: boolean };
+  };
+  notificationPreferences: {
+    digestEmails: boolean;
+    quietHours: boolean;
+  };
+  appearance: {
+    theme: string;
+    fontSize: string;
+    reducedMotion: boolean;
+    highContrast: boolean;
+    compactView: boolean;
+  };
+  repairerSettings?: {
+    serviceArea: number;
+    autoAcceptBookings: boolean;
+    showAvailableSlots: boolean;
+    offerMobileService: boolean;
+    offerPickupService: boolean;
+    autoOrderParts: boolean;
+    instantQuotes: boolean;
+    diagnosticToolIntegration: boolean;
+    blockBookingSlots: number;
+    minimumLeadTime: number;
+  };
+  sellerSettings?: {
+    acceptReturns: boolean;
+    shippingOptions: string[];
+    offerPickup: boolean;
+    offerInstallation: boolean;
+    offerWarranty: boolean;
+    warrantyPeriod: string;
+    returnsWindow: number;
+    restockingFee: number;
+    autoAcceptOrders: boolean;
+  };
+  vehicleOwnerSettings?: {
+    shareMaintenanceHistory: boolean;
+    reminderFrequency: string;
+    autoSchedule: boolean;
+    preferredRepairers: string[];
+    preferredPartsBrands: string[];
+  };
+  // Admin specific settings
+  adminSettings?: {
+    systemEmail: string;
+    maintenanceMode: boolean;
+    loggingLevel: string;
+    analyticsEnabled: boolean;
+    backupFrequency: string;
+  };
+};
+
 import { useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 
 interface RepairerSettingsProps {
   id: string;
-  formData: any;
-  setFormData: (data: any) => void;
+  formData: FormDataType;
+  setFormData: (data: FormDataType) => void;
 }
 
 export default function RepairerSettings({
@@ -15,7 +90,7 @@ export default function RepairerSettings({
   formData,
   setFormData
 }: RepairerSettingsProps) {
-  // Initialize repairer settings if they don't exist
+  // Initialize repairer settings if they don&apos;t exist
   const repairerSettings = formData.repairerSettings || {
     serviceArea: 30,
     autoAcceptBookings: false,
@@ -72,7 +147,7 @@ export default function RepairerSettings({
             className="max-w-[120px]"
           />
           <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
-            Maximum distance you're willing to service
+            Maximum distance you&apos;re willing to service
           </span>
         </div>
       </div>

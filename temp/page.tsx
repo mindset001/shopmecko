@@ -321,7 +321,7 @@ export default function Home() {
                   color: '#6B7280',
                   lineHeight: '1.6',
                 }}>
-                  Create an account and add your vehicle details. We'll keep track of your service history.
+                  Create an account and add your vehicle details. We&apos;ll keep track of your service history.
                 </p>
               </div>
 
@@ -453,7 +453,7 @@ export default function Home() {
                 maxWidth: '48rem',
                 margin: '1.5rem auto 0'
               }}>
-                Don't take our word for it, hear what our users have to say
+                Don&apos;t take our word for it, hear what our users have to say
               </p>
             </div>
             
@@ -471,7 +471,7 @@ export default function Home() {
               
               {/* Testimonial 2 */}
               <TestimonialCard
-                quote="I love how I can track all my vehicle's maintenance history in one place. The reminders are a lifesaver!"
+                quote="I love how I can track all my vehicle&apos;s maintenance history in one place. The reminders are a lifesaver!"
                 author="Sarah Johnson"
                 role="Honda Owner"
               />

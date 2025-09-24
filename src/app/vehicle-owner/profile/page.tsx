@@ -74,7 +74,10 @@ export default function VehicleOwnerProfilePage() {
     fetchProfileData();
   }, [user]);
 
-  const handleSaveProfile = async (updatedProfile: VehicleOwnerProfile) => {
+  const handleSaveProfile = async (data: unknown) => {
+    // Cast the unknown data to VehicleOwnerProfile
+    const updatedProfile = data as VehicleOwnerProfile;
+    
     // In a real app, send this data to your API
     console.log('Saving profile:', updatedProfile);
     

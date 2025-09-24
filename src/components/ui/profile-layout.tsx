@@ -11,8 +11,8 @@ import DashboardHeader from '@/components/ui/dashboard-header';
 interface ProfileLayoutProps {
   userType: 'vehicle-owner' | 'repairer' | 'seller' | 'admin';
   children?: React.ReactNode;
-  profileData: any;
-  onSave: (data: any) => Promise<void>;
+  profileData: unknown;
+  onSave: (data: unknown) => Promise<void>;
   isLoading?: boolean;
 }
 

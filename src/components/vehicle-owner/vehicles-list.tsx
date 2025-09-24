@@ -22,7 +22,7 @@ export default function VehiclesList() {
         // Using the API client to fetch vehicles for the logged-in user
         const data = await api.vehicles.getVehicles();
         setVehicles(data.vehicles || []);
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError(err.message || 'An error occurred while fetching vehicles');
         console.error('Error fetching vehicles:', err);
       } finally {

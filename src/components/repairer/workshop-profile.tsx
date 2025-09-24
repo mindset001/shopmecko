@@ -52,7 +52,7 @@ export default function WorkshopProfile() {
         setProfile(mockProfile);
         setEditableProfile(mockProfile);
         setIsLoading(false);
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError(err.message || 'An error occurred while fetching profile');
         setIsLoading(false);
       }
@@ -76,7 +76,7 @@ export default function WorkshopProfile() {
       setProfile(editableProfile);
       setIsEditing(false);
       // Show success message
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || 'An error occurred while saving profile');
     }
   };

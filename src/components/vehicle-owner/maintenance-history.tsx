@@ -26,7 +26,7 @@ export default function MaintenanceHistory() {
         if (data.vehicles.length > 0) {
           setSelectedVehicleId(data.vehicles[0].id);
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError(err.message || 'An error occurred while fetching vehicles');
         console.error('Error fetching vehicles:', err);
       } finally {
@@ -51,7 +51,7 @@ export default function MaintenanceHistory() {
         }
 
         setMaintenanceRecords(data.maintenanceHistory || []);
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError(err.message || 'An error occurred while fetching maintenance records');
         console.error('Error fetching maintenance records:', err);
       } finally {
@@ -187,7 +187,7 @@ export default function MaintenanceHistory() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
               </svg>
               <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-gray-200">No maintenance records</h3>
-              <p className="mt-2 text-gray-500 dark:text-gray-400">Start tracking your vehicle's maintenance by adding your first record.</p>
+              <p className="mt-2 text-gray-500 dark:text-gray-400">Start tracking your vehicle&apos;s maintenance by adding your first record.</p>
               <button
                 onClick={addMaintenanceRecord}
                 className="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"

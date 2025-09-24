@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       return Promise.resolve(); // Explicitly resolve the promise for success
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || 'An error occurred during login');
       console.error('Login error:', err);
       return Promise.reject(err); // Explicitly reject the promise for errors
@@ -126,7 +126,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       // Registration successful, but user needs to login
       setUser(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || 'An error occurred during registration');
       console.error('Registration error:', err);
     } finally {

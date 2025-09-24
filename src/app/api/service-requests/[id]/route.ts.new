@@ -163,12 +163,13 @@ async function updateServiceRequest(req: NextRequest, user?: JwtPayload) {
     
     // Format coordinates for MongoDB if they exist
     if (validatedData.location?.coordinates) {
-      // Create a properly typed coordinates object
-      const geoCoordinates = {
-        longitude: validatedData.location.coordinates.longitude,
-        latitude: validatedData.location.coordinates.latitude
+      validatedData.location.coordinates = {
+        type: 'Point',
+        coordinates: [
+          validatedData.location.coordinates.longitude,
+          validatedData.location.coordinates.latitude
+        ]
       };
-      validatedData.location.coordinates = geoCoordinates;
     }
     
     // Handle service completion

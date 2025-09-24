@@ -135,7 +135,7 @@ export default function StoreProfile() {
         
         setStoreData(mockStore);
         setIsLoading(false);
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError(err.message || 'An error occurred while fetching store data');
         setIsLoading(false);
       }

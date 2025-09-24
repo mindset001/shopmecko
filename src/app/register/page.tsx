@@ -66,16 +66,17 @@ export default function RegisterPage() {
     
     try {
       await register({
-        name: formData.name,
+        fullName: formData.name,
         email: formData.email,
         password: formData.password,
-        phoneNumber: formData.phoneNumber,
+        phone: formData.phoneNumber,
         role: formData.role,
-        location: {
-          address: formData.address,
+        address: {
+          street: formData.address,
           city: formData.city,
           state: formData.state,
           country: formData.country,
+          postalCode: '' // Add a default empty value for postalCode
         }
       });
       

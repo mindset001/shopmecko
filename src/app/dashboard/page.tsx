@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Vehicle, MaintenanceRecord } from "@/types/models";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,28 +18,12 @@ import FindMechanics from "@/components/vehicle-owner/find-mechanics";
 import ServiceRequestForm from "@/components/vehicle-owner/service-request-form";
 
 export default function VehicleOwnerDashboard() {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isAddVehicleModalOpen, setIsAddVehicleModalOpen] = useState(false);
   const [isServiceRequestModalOpen, setIsServiceRequestModalOpen] = useState(false);
   const [selectedRepairerId, setSelectedRepairerId] = useState('');
-  interface Vehicle {
-    id: string;
-    ownerId: string;
-    make: string;
-    model: string;
-    year: number;
-    registrationNumber: string;
-    vin?: string;
-    color: string;
-    fuelType: string;
-    engineSize: string;
-    transmissionType: string;
-    maintenanceHistory: any[];
-    createdAt: Date;
-    updatedAt: Date;
-  }
   
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [formData, setFormData] = useState({
@@ -57,15 +42,17 @@ export default function VehicleOwnerDashboard() {
   useEffect(() => {
     // Check authentication status
     console.log("Dashboard - Auth check - User:", user);
-    console.log("Dashboard - Auth check - Token:", token);
     
     const checkAuth = async () => {
       // Give a small delay to ensure auth context is fully loaded
       await new Promise(resolve => setTimeout(resolve, 500));
       
+      // Get token from localStorage if needed
+      const storedToken = typeof window !== 'undefined' ? localStorage.getItem('shopmeco_token') : null;
+      
       // Check if we're authenticated via the context
-      let isAuthenticated = !!user && !!token;
-      let userRole = user?.role || '';
+      const isAuthenticated = !!user && !!storedToken;
+      const userRole = user?.role || '';
       
       // If not authenticated via context, let the middleware handle the redirect
       
@@ -150,7 +137,7 @@ export default function VehicleOwnerDashboard() {
       document.removeEventListener('openAddVehicleModal', handleAddVehicleEvent);
       window.removeEventListener('request-service', handleRequestServiceEvent as EventListener);
     };
-  }, [user, token, router]);
+  }, [user, router]);
   
   const handleOpenAddVehicleModal = () => {
     setIsAddVehicleModalOpen(true);
@@ -187,11 +174,14 @@ export default function VehicleOwnerDashboard() {
     
     try {
       // In a real app, this would send data to your backend API
+      // Get token from localStorage
+      const storedToken = typeof window !== 'undefined' ? localStorage.getItem('shopmeco_token') : null;
+      
       const response = await fetch('/api/vehicles', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${storedToken}`
         },
         body: JSON.stringify(formData)
       });

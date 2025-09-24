@@ -65,7 +65,7 @@ export default function ServiceManagement() {
 
         setServices(mockServices);
         setIsLoading(false);
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError(err.message || 'An error occurred while fetching services');
         setIsLoading(false);
       }

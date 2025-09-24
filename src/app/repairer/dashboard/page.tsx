@@ -11,7 +11,7 @@ import ServiceQuotes from "@/components/repairer/service-quotes";
 import DashboardHeader from "@/components/ui/dashboard-header";
 
 export default function RepairerDashboard() {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -21,8 +21,8 @@ export default function RepairerDashboard() {
       await new Promise(resolve => setTimeout(resolve, 500));
       
       // Check if we're authenticated via the context
-      let isAuthenticated = !!user && !!token;
-      let userRole = user?.role || '';
+      const isAuthenticated = !!user;
+      const userRole = user?.role || '';
       
       console.log("IsAuthenticated:", isAuthenticated);
       console.log("UserRole:", userRole);
@@ -43,7 +43,7 @@ export default function RepairerDashboard() {
     };
     
     checkAuth();
-  }, [user, token, router]);
+  }, [user, router]);
 
   if (isLoading) {
     return (

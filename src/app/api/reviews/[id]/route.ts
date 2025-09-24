@@ -88,7 +88,7 @@ async function updateReview(req: NextRequest, user: any, { params }: { params: {
     if (validatedData.rating && validatedData.rating !== previousRating) {
       // Find the target to update its rating
       let target;
-      let ratingsDiff = newRating - previousRating;
+      const ratingsDiff = newRating - previousRating;
       
       switch (review.targetType) {
         case 'product':
