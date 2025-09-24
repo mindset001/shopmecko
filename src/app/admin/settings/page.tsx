@@ -72,7 +72,10 @@ export default function AdminSettingsPage() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState('');
   
-  const handleSave = async (data: any) => {
+  // Define a type for the form data structure
+  type AdminSettingsFormData = typeof formData;
+  
+  const handleSave = async (data: AdminSettingsFormData) => {
     setIsSaving(true);
     setSaveError('');
     

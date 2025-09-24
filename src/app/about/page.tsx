@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Footer } from '@/components/ui/footer';
 import { Header } from '@/components/ui/header';
 
@@ -129,7 +129,7 @@ export default function AboutUs() {
                   
                   <div className="space-y-6">
                     <p className="text-lg text-white/90 leading-relaxed relative">
-                      <span className="absolute -left-4 top-0 text-3xl text-shopmeco-blue/40">"</span>
+                      <span className="absolute -left-4 top-0 text-3xl text-shopmeco-blue/40">&ldquo;</span>
                       ShopMeco was founded in 2023 with a simple mission: to transform the fragmented vehicle maintenance industry by creating a unified platform that connects all stakeholders.
                     </p>
                     
@@ -138,8 +138,8 @@ export default function AboutUs() {
                     </p>
                     
                     <p className="text-lg text-white/90 leading-relaxed relative">
-                      We built ShopMeco to bridge this gap, creating a transparent ecosystem where trust, quality, and convenience are paramount. Today, we're proud to serve thousands of users across the country, making vehicle maintenance simpler and more accessible for everyone.
-                      <span className="absolute -right-4 bottom-0 text-3xl text-shopmeco-blue/40">"</span>
+                      We built ShopMeco to bridge this gap, creating a transparent ecosystem where trust, quality, and convenience are paramount. Today, we&rsquo;re proud to serve thousands of users across the country, making vehicle maintenance simpler and more accessible for everyone.
+                      <span className="absolute -right-4 bottom-0 text-3xl text-shopmeco-blue/40">&rdquo;</span>
                     </p>
                   </div>
                   
@@ -465,9 +465,11 @@ export default function AboutUs() {
                         {/* Image container with overlay effect */}
                         <div className="relative w-32 h-32 mb-6 rounded-full overflow-hidden border-2 border-white/20 group-hover:border-white/40 transition-all duration-300 shadow-lg">
                           <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                          <img 
+                          <Image 
                             src={person.image} 
-                            alt={person.name} 
+                            alt={person.name}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 128px"
                             className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700"
                           />
                         </div>
@@ -786,7 +788,7 @@ export default function AboutUs() {
                 <div className="text-center mt-16">
                   <div className="inline-block relative">
                     <span className="text-2xl font-light text-white/80">
-                      And we're just getting started...
+                      And we&rsquo;re just getting started...
                     </span>
                     <div className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-shopmeco-blue/40 to-transparent"></div>
                   </div>

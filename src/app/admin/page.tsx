@@ -39,7 +39,8 @@ export default function AdminDashboard() {
   const { user, token } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("overview");
+  // Using state for active tab and keeping the setter for future use
+  const [, setActiveTab] = useState("overview");
 
   useEffect(() => {
     // Check authentication status
@@ -50,8 +51,8 @@ export default function AdminDashboard() {
       await new Promise(resolve => setTimeout(resolve, 500));
       
       // Check if we're authenticated via the context
-      let isAuthenticated = !!user && !!token;
-      let userRole = user?.role || '';
+      const isAuthenticated = !!user && !!token;
+      const userRole = user?.role || '';
       
       console.log("IsAuthenticated:", isAuthenticated);
       console.log("UserRole:", userRole);
