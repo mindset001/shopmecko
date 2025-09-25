@@ -6,7 +6,7 @@ import { IUser } from '@/models/User';
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 // Interface for JWT payload
-interface JwtPayload {
+export interface JwtPayload {
   userId: string;
   email: string;
   role: string;

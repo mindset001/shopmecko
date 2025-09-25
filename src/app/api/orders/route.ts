@@ -231,7 +231,7 @@ async function createOrder(req: NextRequest, user: any) {
   }
 }
 
-export const GET = withAuth(getOrders, { requiresAuth: true });
+export const GET = withAuth(getOrdersWrapper, { requiresAuth: true });
 export const POST = withAuth(createOrder, {
   requiresAuth: true,
   allowedRoles: ['vehicle-owner']

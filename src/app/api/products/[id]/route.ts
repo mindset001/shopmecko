@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { connectToDatabase } from '@/lib/db';
-import { withAuth } from '@/lib/auth';
+import { withAuth, JwtPayload } from '@/lib/auth';
 import { validateData, handleApiError } from '@/lib/api-utils';
 import { Product } from '@/models';
 
@@ -21,7 +21,7 @@ const updateProductSchema = z.object({
   }).optional(),
   stock: z.number().int().min(0, 'Stock cannot be negative').optional(),
   images: z.array(z.string()).min(1, 'At least one product image is required').optional(),
-  specifications: z.record(z.string()).optional(),
+  specifications: z.record(z.string(), z.string()).optional(),
   isAvailable: z.boolean().optional(),
 });
 
@@ -140,6 +140,24 @@ async function deleteProduct(req: NextRequest, user: any, { params }: { params: 
   }
 }
 
+/**
+ * Wrapper for updateProduct to make it compatible with withAuth
+ */
+function updateProductWrapper(req: NextRequest, user?: JwtPayload) {
+  // Extract params from the URL if needed
+  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
+  return updateProduct(req, user, { params });
+}
+
+/**
+ * Wrapper for deleteProduct to make it compatible with withAuth
+ */
+function deleteProductWrapper(req: NextRequest, user?: JwtPayload) {
+  // Extract params from the URL if needed
+  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
+  return deleteProduct(req, user, { params });
+}
+
 export const GET = getProduct;
-export const PUT = withAuth(updateProduct, { requiresAuth: true });
-export const DELETE = withAuth(deleteProduct, { requiresAuth: true });
+export const PUT = withAuth(updateProductWrapper, { requiresAuth: true });
+export const DELETE = withAuth(deleteProductWrapper, { requiresAuth: true });

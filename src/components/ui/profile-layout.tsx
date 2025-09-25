@@ -25,14 +25,14 @@ export default function ProfileLayout({
 }: ProfileLayoutProps) {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState(profileData);
+  const [formData, setFormData] = useState<Record<string, any>>(profileData as Record<string, any>);
   const [isSaving, setIsSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev: Record<string, any>) => ({
       ...prev,
       [name]: value
     }));
@@ -61,7 +61,7 @@ export default function ProfileLayout({
   };
 
   const handleCancel = () => {
-    setFormData(profileData);
+    setFormData(profileData as Record<string, any>);
     setIsEditing(false);
     setErrorMessage('');
   };

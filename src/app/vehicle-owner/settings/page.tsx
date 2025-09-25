@@ -1,80 +1,5 @@
 'use client';
 
-// Define FormData type based on the state structure
-type FormDataType = {
-  language: string;
-  timezone: string;
-  dateFormat: string;
-  contactEmail: string;
-  address: string;
-  twoFactorEnabled: boolean;
-  loginNotifications: boolean;
-  sessionTimeout: string;
-  deviceManagement: {
-    currentDevice: {
-      name: string;
-      lastActive: string;
-      location: string;
-    }
-  };
-  notifications: {
-    account: { email: boolean; push: boolean; sms: boolean };
-    updates: { email: boolean; push: boolean; sms: boolean };
-    promotions: { email: boolean; push: boolean; sms: boolean };
-    security: { email: boolean; push: boolean; sms: boolean };
-    serviceUpdates: { email: boolean; push: boolean; sms: boolean };
-  };
-  notificationPreferences: {
-    digestEmails: boolean;
-    quietHours: boolean;
-  };
-  appearance: {
-    theme: string;
-    fontSize: string;
-    reducedMotion: boolean;
-    highContrast: boolean;
-    compactView: boolean;
-  };
-  repairerSettings?: {
-    serviceArea: number;
-    autoAcceptBookings: boolean;
-    showAvailableSlots: boolean;
-    offerMobileService: boolean;
-    offerPickupService: boolean;
-    autoOrderParts: boolean;
-    instantQuotes: boolean;
-    diagnosticToolIntegration: boolean;
-    blockBookingSlots: number;
-    minimumLeadTime: number;
-  };
-  sellerSettings?: {
-    acceptReturns: boolean;
-    shippingOptions: string[];
-    offerPickup: boolean;
-    offerInstallation: boolean;
-    offerWarranty: boolean;
-    warrantyPeriod: string;
-    returnsWindow: number;
-    restockingFee: number;
-    autoAcceptOrders: boolean;
-  };
-  vehicleOwnerSettings?: {
-    shareMaintenanceHistory: boolean;
-    reminderFrequency: string;
-    autoSchedule: boolean;
-    preferredRepairers: string[];
-    preferredPartsBrands: string[];
-  };
-  // Admin specific settings
-  adminSettings?: {
-    systemEmail: string;
-    maintenanceMode: boolean;
-    loggingLevel: string;
-    analyticsEnabled: boolean;
-    backupFrequency: string;
-  };
-};
-
 import { useState, useCallback } from 'react';
 import SettingsLayout from '@/components/ui/settings-layout';
 import GeneralSettings from '@/components/settings/general-settings';
@@ -82,10 +7,11 @@ import SecuritySettings from '@/components/settings/security-settings';
 import NotificationSettings from '@/components/settings/notification-settings';
 import AppearanceSettings from '@/components/settings/appearance-settings';
 import VehicleOwnerSettings from '@/components/settings/vehicle-owner-settings';
+import { FormDataType } from '@/types/settings';
 
 export default function VehicleOwnerSettingsPage() {
   // Mock user data
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataType>({
     // General settings
     language: 'english',
     timezone: 'UTC-5',
@@ -133,7 +59,14 @@ export default function VehicleOwnerSettingsPage() {
       reminderFrequency: 'weekly',
       autoSchedule: false,
       preferredRepairers: [],
-      preferredPartsBrands: []
+      preferredPartsBrands: [],
+      defaultServiceRadius: 25,
+      preferredSellers: [],
+      automaticServiceReminders: true,
+      showPriceEstimates: true,
+      shareDrivingData: false,
+      receivePartSuggestions: true,
+      maintenanceAlerts: true
     }
   });
   
@@ -145,7 +78,7 @@ export default function VehicleOwnerSettingsPage() {
   const handleFormDataChange = useCallback((data: FormDataType) => {
     setFormData(data);
   }, []);
-  
+
   const handleSave = async (data: unknown) => {
     setIsSaving(true);
     setSaveError('');
@@ -161,6 +94,11 @@ export default function VehicleOwnerSettingsPage() {
         
         // Here you would normally send the data to your API
         console.log('Saving settings:', data as FormDataType);
+        resolve();
+      }, 1500);
+    });
+  };
+  
   const tabs = [
     {
       id: 'general',

@@ -27,7 +27,7 @@ export default function MaintenanceHistory() {
           setSelectedVehicleId(data.vehicles[0].id);
         }
       } catch (err: unknown) {
-        setError(err.message || 'An error occurred while fetching vehicles');
+        setError((err instanceof Error) ? err.message : 'An error occurred while fetching vehicles');
         console.error('Error fetching vehicles:', err);
       } finally {
         setIsLoading(false);
@@ -52,7 +52,7 @@ export default function MaintenanceHistory() {
 
         setMaintenanceRecords(data.maintenanceHistory || []);
       } catch (err: unknown) {
-        setError(err.message || 'An error occurred while fetching maintenance records');
+        setError((err instanceof Error) ? err.message : 'An error occurred while fetching maintenance records');
         console.error('Error fetching maintenance records:', err);
       } finally {
         setIsLoading(false);

@@ -98,7 +98,7 @@ export default function ServiceQuotes() {
         setQuotes(mockQuotes);
         setIsLoading(false);
       } catch (err: unknown) {
-        setError(err.message || 'An error occurred while fetching service quotes');
+        setError(err instanceof Error ? err.message : 'An error occurred while fetching service quotes');
         setIsLoading(false);
       }
     };

@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "fix": "node fix-all-settings.js && node fix-eslint.js && node fix-vehicle-owner-settings.js && node fix-auth-export.js && node fix-zod-record.js && node fix-reviews-api.js && node fix-api-routes.js && node fix-auth-context.js",
+    "fix:auth": "node fix-auth-export.js",
+    "fix:api": "node fix-api-routes.js",
+    "fix:zod": "node fix-zod-record.js",
+    "fix:reviews": "node fix-reviews-api.js",
+    "fix:auth-context": "node fix-auth-context.js"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
@@ -30,12 +36,14 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.14",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
+    "glob": "^11.0.3",
     "postcss": "^8.4.24",
     "tailwindcss": "^3.3.2",
     "typescript": "^5"

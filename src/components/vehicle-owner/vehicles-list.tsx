@@ -23,7 +23,7 @@ export default function VehiclesList() {
         const data = await api.vehicles.getVehicles();
         setVehicles(data.vehicles || []);
       } catch (err: unknown) {
-        setError(err.message || 'An error occurred while fetching vehicles');
+        setError(err instanceof Error ? err.message : 'An error occurred while fetching vehicles');
         console.error('Error fetching vehicles:', err);
       } finally {
         setIsLoading(false);

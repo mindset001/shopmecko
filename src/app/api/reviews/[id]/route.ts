@@ -322,6 +322,6 @@ async function respondToReview(req: NextRequest, user: any, { params }: { params
 }
 
 export const GET = getReview;
-export const PUT = withAuth(updateReview, { requiresAuth: true });
-export const DELETE = withAuth(deleteReview, { requiresAuth: true });
-export const POST = withAuth(respondToReview, { requiresAuth: true });
+export const PUT = withAuth(updateReviewWrapper, { requiresAuth: true });
+export const DELETE = withAuth(deleteReviewWrapper, { requiresAuth: true });
+export const POST = withAuth(respondToReviewWrapper, { requiresAuth: true });

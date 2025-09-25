@@ -54,7 +54,7 @@ async function getReviews(req: NextRequest) {
     // Filter by rating
     const rating = searchParams.get('rating');
     if (rating) {
-      query.rating = parseInt(rating, 10);
+      (query as any).rating = parseInt(rating, 10);
     }
     
     // Pagination
@@ -80,7 +80,7 @@ async function getReviews(req: NextRequest) {
     ]);
     
     // Format rating distribution
-    const distribution = {};
+    const distribution: Record<number | string, number> = {};
     for (let i = 1; i <= 5; i++) {
       distribution[i] = 0;
     }
@@ -128,8 +128,8 @@ async function createReview(req: NextRequest, user: any) {
       case 'seller':
         target = await User.findById(validatedData.targetId);
         if (target && 
-            ((validatedData.targetType === 'repairer' && target.role !== 'repairer') ||
-             (validatedData.targetType === 'seller' && target.role !== 'seller'))) {
+            ((validatedData.targetType === 'repairer' && target.role !== 'REPAIRER') ||
+             (validatedData.targetType === 'seller' && target.role !== 'SELLER'))) {
           target = null;
         }
         break;
@@ -189,7 +189,7 @@ async function createReview(req: NextRequest, user: any) {
           hasUsedService = !!serviceRequest && serviceRequest.serviceType === target.name;
         } else {
           // For repairer reviews, check if the repairer was involved
-          hasUsedService = !!serviceRequest && serviceRequest.repairerId.toString() === validatedData.targetId;
+          hasUsedService = !!serviceRequest && serviceRequest?.repairerId?.toString() === validatedData.targetId;
         }
       } else {
         // Check any service request
@@ -250,14 +250,14 @@ async function createReview(req: NextRequest, user: any) {
     let currentRatings;
     switch (validatedData.targetType) {
       case 'product':
-        currentRatings = target.ratings || { average: 0, count: 0 };
+        currentRatings = (target as any).ratings || { average: 0, count: 0 };
         await Product.findByIdAndUpdate(validatedData.targetId, {
           'ratings.average': ((currentRatings.average * currentRatings.count) + validatedData.rating) / (currentRatings.count + 1),
           'ratings.count': currentRatings.count + 1
         });
         break;
       case 'service':
-        currentRatings = target.ratings || { average: 0, count: 0 };
+        currentRatings = (target as any).ratings || { average: 0, count: 0 };
         await RepairService.findByIdAndUpdate(validatedData.targetId, {
           'ratings.average': ((currentRatings.average * currentRatings.count) + validatedData.rating) / (currentRatings.count + 1),
           'ratings.count': currentRatings.count + 1
@@ -265,7 +265,7 @@ async function createReview(req: NextRequest, user: any) {
         break;
       case 'repairer':
       case 'seller':
-        currentRatings = target.ratings || { average: 0, count: 0 };
+        currentRatings = (target as any).ratings || { average: 0, count: 0 };
         await User.findByIdAndUpdate(validatedData.targetId, {
           'ratings.average': ((currentRatings.average * currentRatings.count) + validatedData.rating) / (currentRatings.count + 1),
           'ratings.count': currentRatings.count + 1

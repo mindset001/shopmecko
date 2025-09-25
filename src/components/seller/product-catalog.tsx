@@ -107,7 +107,7 @@ export default function ProductCatalog() {
         setProducts(mockProducts);
         setIsLoading(false);
       } catch (err: unknown) {
-        setError(err.message || 'An error occurred while fetching products');
+        setError(err instanceof Error ? err.message : 'An error occurred while fetching products');
         setIsLoading(false);
       }
     };

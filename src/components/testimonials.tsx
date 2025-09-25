@@ -128,7 +128,9 @@ export default function Testimonials({
               key={`testimonial-${index + 1}`}
               id={`testimonial-${index + 1}`} 
               data-scroll
-              ref={(el) => el && (elementsRef.current[index] = el)}
+              ref={(el) => {
+                if (el) elementsRef.current[index] = el;
+              }}
               className={`transition-all duration-700 ${index > 0 ? `delay-${index * 150}` : ''} 
                 ${isVisible[`testimonial-${index + 1}`] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
             >

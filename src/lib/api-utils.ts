@@ -12,7 +12,7 @@ export function validateData<T>(data: unknown, schema: z.ZodSchema<T>): T {
     return schema.parse(data);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const fieldErrors = error.errors.map((err) => ({
+      const fieldErrors = error.issues.map((err) => ({
         path: err.path.join('.'),
         message: err.message,
       }));

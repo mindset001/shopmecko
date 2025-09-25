@@ -362,10 +362,10 @@ async function cancelServiceRequest(req: NextRequest, user?: JwtPayload) {
   }
 }
 
-export const GET = withAuth(getServiceRequest, { requiresAuth: true });
-export const PUT = withAuth(updateServiceRequest, { requiresAuth: true });
+export const GET = withAuth(getServiceRequestWrapper, { requiresAuth: true });
+export const PUT = withAuth(updateServiceRequestWrapper, { requiresAuth: true });
 export const POST = withAuth(completeServiceRequest, { 
   requiresAuth: true,
   allowedRoles: ['repairer'] 
 });
-export const DELETE = withAuth(cancelServiceRequest, { requiresAuth: true });
+export const DELETE = withAuth(cancelServiceRequestWrapper, { requiresAuth: true });

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { connectToDatabase } from '@/lib/db';
-import { withAuth } from '@/lib/auth';
+import { withAuth, JwtPayload } from '@/lib/auth';
 import { validateData, handleApiError } from '@/lib/api-utils';
 import { RepairService, User } from '@/models';
 
@@ -138,6 +138,24 @@ async function deleteRepairService(req: NextRequest, user: any, { params }: { pa
   }
 }
 
+/**
+ * Wrapper for updateRepairService to make it compatible with withAuth
+ */
+function updateRepairServiceWrapper(req: NextRequest, user?: JwtPayload) {
+  // Extract params from the URL if needed
+  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
+  return updateRepairService(req, user, { params });
+}
+
+/**
+ * Wrapper for deleteRepairService to make it compatible with withAuth
+ */
+function deleteRepairServiceWrapper(req: NextRequest, user?: JwtPayload) {
+  // Extract params from the URL if needed
+  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
+  return deleteRepairService(req, user, { params });
+}
+
 export const GET = getRepairService;
-export const PUT = withAuth(updateRepairService, { requiresAuth: true });
-export const DELETE = withAuth(deleteRepairService, { requiresAuth: true });
+export const PUT = withAuth(updateRepairServiceWrapper, { requiresAuth: true });
+export const DELETE = withAuth(deleteRepairServiceWrapper, { requiresAuth: true });

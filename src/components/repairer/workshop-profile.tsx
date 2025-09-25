@@ -77,7 +77,8 @@ export default function WorkshopProfile() {
       setIsEditing(false);
       // Show success message
     } catch (err: unknown) {
-      setError(err.message || 'An error occurred while saving profile');
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred while saving profile';
+      setError(errorMessage);
     }
   };
 

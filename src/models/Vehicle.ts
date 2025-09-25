@@ -1,11 +1,10 @@
 import mongoose, { Document, Schema, model, Model } from 'mongoose';
-import { MaintenanceRecord } from '@/types/models';
 
 // Interface for Vehicle document
-export interface IVehicle extends Document {
+export interface IVehicle extends Omit<Document, 'model'> {
   ownerId: mongoose.Types.ObjectId;
   make: string;
-  model: string;
+  model: string; // Vehicle model (conflicts with Document.model method)
   year: number;
   registrationNumber: string;
   vin?: string;

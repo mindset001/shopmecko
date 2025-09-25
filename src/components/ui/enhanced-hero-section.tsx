@@ -307,7 +307,7 @@ export default function EnhancedHeroSection() {
                   </span>
                 </CtaButton>
                 
-                <CtaButton href="/register?role=SELLER" variant="outline" className="group relative overflow-hidden shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+                <CtaButton href="/register?role=SELLER" variant="secondary" className="group relative overflow-hidden shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300">
                   <span className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-300 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
                   <span className="relative flex items-center justify-center">
                     <svg className="w-5 h-5 mr-2 transform group-hover:-rotate-12 transition-transform duration-300" 

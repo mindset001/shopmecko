@@ -25,7 +25,8 @@ export default function ServiceRequests() {
         const vehiclesData = await api.vehicles.getVehicles();
         setVehicles(vehiclesData.vehicles || []);
       } catch (err: unknown) {
-        setError(err.message || 'An error occurred while fetching data');
+        const errorMessage = err instanceof Error ? err.message : 'An error occurred while fetching data';
+        setError(errorMessage);
         console.error('Error fetching data:', err);
       } finally {
         setIsLoading(false);

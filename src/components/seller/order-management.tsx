@@ -144,7 +144,8 @@ export default function OrderManagement() {
         setOrders(mockOrders);
         setIsLoading(false);
       } catch (err: unknown) {
-        setError(err.message || 'An error occurred while fetching orders');
+        const errorMessage = err instanceof Error ? err.message : 'An error occurred while fetching orders';
+        setError(errorMessage);
         setIsLoading(false);
       }
     };

@@ -214,7 +214,7 @@ export default function HeroSection() {
                 Join as Repairer
               </CtaButton>
               
-              <CtaButton href="/register?role=SELLER" variant="outline" className="group transition-transform duration-300 hover:scale-105">
+              <CtaButton href="/register?role=SELLER" variant="secondary" className="group transition-transform duration-300 hover:scale-105">
                 <svg style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem', transition: 'transform 0.3s' }}
                      className="group-hover:rotate-12"
                      fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -371,7 +371,6 @@ export default function HeroSection() {
                 />
               ))}
             </div>
-            )}
           </div>
           
           {/* Feature tags */}

@@ -77,7 +77,8 @@ export default function AppointmentScheduler() {
         setAppointments(mockAppointments);
         setIsLoading(false);
       } catch (err: unknown) {
-        setError(err.message || 'An error occurred while fetching appointments');
+        const errorMessage = err instanceof Error ? err.message : 'An error occurred while fetching appointments';
+        setError(errorMessage);
         setIsLoading(false);
       }
     };

@@ -170,5 +170,5 @@ async function updateOrder(req: NextRequest, user: any, { params }: { params: { 
   }
 }
 
-export const GET = withAuth(getOrder, { requiresAuth: true });
-export const PUT = withAuth(updateOrder, { requiresAuth: true });
+export const GET = withAuth(getOrderWrapper, { requiresAuth: true });
+export const PUT = withAuth(updateOrderWrapper, { requiresAuth: true });
