@@ -28,9 +28,13 @@ const updateProductSchema = z.object({
 /**
  * GET: Get a specific product
  */
-async function getProduct(req: NextRequest, { params }: { params: { id: string } }) {
+async function getProduct(
+  req: NextRequest, 
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectToDatabase();
+    const params = await context.params;
     const productId = params.id;
     
     const product = await Product.findById(productId)
@@ -53,9 +57,14 @@ async function getProduct(req: NextRequest, { params }: { params: { id: string }
  * PUT: Update a specific product
  * Only the seller or admin can update the product
  */
-async function updateProduct(req: NextRequest, user: any, { params }: { params: { id: string } }) {
+async function updateProduct(
+  req: NextRequest, 
+  user: any, 
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectToDatabase();
+    const params = await context.params;
     const productId = params.id;
     
     // Find the product
@@ -101,9 +110,14 @@ async function updateProduct(req: NextRequest, user: any, { params }: { params: 
  * DELETE: Delete a specific product
  * Only the seller or admin can delete the product
  */
-async function deleteProduct(req: NextRequest, user: any, { params }: { params: { id: string } }) {
+async function deleteProduct(
+  req: NextRequest, 
+  user: any, 
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectToDatabase();
+    const params = await context.params;
     const productId = params.id;
     
     // Find the product
@@ -143,19 +157,35 @@ async function deleteProduct(req: NextRequest, user: any, { params }: { params: 
 /**
  * Wrapper for updateProduct to make it compatible with withAuth
  */
-function updateProductWrapper(req: NextRequest, user?: JwtPayload) {
-  // Extract params from the URL if needed
-  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
-  return updateProduct(req, user, { params });
+function updateProductWrapper(
+  req: NextRequest, 
+  user?: JwtPayload, 
+  context?: { params: Promise<{ id: string }> }
+) {
+  if (!context) {
+    // Extract params from the URL if context is not provided
+    const id = req.nextUrl.pathname.split('/').pop() || '';
+    const params = Promise.resolve({ id });
+    context = { params };
+  }
+  return updateProduct(req, user, context);
 }
 
 /**
  * Wrapper for deleteProduct to make it compatible with withAuth
  */
-function deleteProductWrapper(req: NextRequest, user?: JwtPayload) {
-  // Extract params from the URL if needed
-  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
-  return deleteProduct(req, user, { params });
+function deleteProductWrapper(
+  req: NextRequest, 
+  user?: JwtPayload, 
+  context?: { params: Promise<{ id: string }> }
+) {
+  if (!context) {
+    // Extract params from the URL if context is not provided
+    const id = req.nextUrl.pathname.split('/').pop() || '';
+    const params = Promise.resolve({ id });
+    context = { params };
+  }
+  return deleteProduct(req, user, context);
 }
 
 export const GET = getProduct;
