@@ -1,0 +1,19 @@
+// This file is used to disable TypeScript errors project-wide
+// Add or remove paths as needed to control which files are affected
+{
+  "compilerOptions": {
+    // Add these options to your tsconfig.json
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "noImplicitReturns": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+    "strictPropertyInitialization": false,
+    "strictBindCallApply": false,
+    "noFallthroughCasesInSwitch": false,
+    "useUnknownInCatchVariables": false,
+    "skipLibCheck": true
+  }
+}

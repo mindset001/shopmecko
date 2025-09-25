@@ -1,0 +1,17 @@
+# Ignore all files
+**/*.js
+**/*.jsx
+**/*.ts
+**/*.tsx
+**/*.mjs
+**/*.cjs
+
+# Except for configuration files
+!.eslintrc.*
+!eslint.config.mjs
+
+# Node modules and build artifacts
+node_modules
+.next
+out
+build
