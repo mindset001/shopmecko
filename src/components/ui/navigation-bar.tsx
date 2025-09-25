@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import Link from 'next/link';
 import InteractiveLink from './interactive-link';
 
 export default function NavigationBar() {
@@ -30,7 +31,7 @@ export default function NavigationBar() {
         zIndex: 40
       }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <a href="/" style={{ 
+          <Link href="/" style={{ 
             fontWeight: 'bold', 
             fontSize: '1.5rem', 
             display: 'flex',
@@ -38,7 +39,7 @@ export default function NavigationBar() {
           }}>
             <span style={{color: '#0071ff'}}>Shop</span>
             <span style={{color: '#374151'}}>Meco</span>
-          </a>
+          </Link>
         </div>
 
         {/* Navigation Links for Desktop */}
@@ -170,9 +171,9 @@ export default function NavigationBar() {
           display: 'flex',
           flexDirection: 'column'
         }} className="md:hidden">
-          <a href="/" style={{ padding: '12px 0', fontWeight: '500', color: '#374151' }}>
+          <Link href="/" style={{ padding: '12px 0', fontWeight: '500', color: '#374151' }}>
             Home
-          </a>
+          </Link>
           <a href="/about" style={{ padding: '12px 0', fontWeight: '500', color: '#374151' }}>
             About
           </a>

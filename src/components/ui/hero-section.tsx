@@ -345,7 +345,7 @@ export default function HeroSection() {
                   }}
                 />
               </div>
-            ))}
+            )))}
             
             {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/30"></div>
