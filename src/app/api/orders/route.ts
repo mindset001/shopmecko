@@ -4,6 +4,7 @@ import { connectToDatabase } from '@/lib/db';
 import { withAuth } from '@/lib/auth';
 import { validateData, handleApiError } from '@/lib/api-utils';
 import { Order, Product, User } from '@/models';
+import { JwtPayload } from '@/lib/auth';
 
 // Validation schema for creating orders
 const createOrderSchema = z.object({
@@ -236,3 +237,7 @@ export const POST = withAuth(createOrder, {
   requiresAuth: true,
   allowedRoles: ['vehicle-owner']
 });
+function getOrdersWrapper(req: NextRequest, user?: JwtPayload | undefined): Promise<NextResponse<unknown>> {
+  throw new Error('Function not implemented.');
+}
+

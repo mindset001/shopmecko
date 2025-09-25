@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { connectToDatabase } from '@/lib/db';
-import { withAuth } from '@/lib/auth';
+import { withAuth, JwtPayload } from '@/lib/auth';
 import { validateData, handleApiError } from '@/lib/api-utils';
 import { Order } from '@/models';
 
@@ -168,6 +168,24 @@ async function updateOrder(req: NextRequest, user: any, { params }: { params: { 
   } catch (error) {
     return handleApiError(error);
   }
+}
+
+/**
+ * Wrapper for getOrder to make it compatible with withAuth
+ */
+function getOrderWrapper(req: NextRequest, user?: JwtPayload) {
+  // Extract params from the URL if needed
+  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
+  return getOrder(req, user, { params });
+}
+
+/**
+ * Wrapper for updateOrder to make it compatible with withAuth
+ */
+function updateOrderWrapper(req: NextRequest, user?: JwtPayload) {
+  // Extract params from the URL if needed
+  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
+  return updateOrder(req, user, { params });
 }
 
 export const GET = withAuth(getOrderWrapper, { requiresAuth: true });

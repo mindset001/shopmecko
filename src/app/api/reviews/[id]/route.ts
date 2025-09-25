@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { connectToDatabase } from '@/lib/db';
-import { withAuth } from '@/lib/auth';
+import { withAuth, JwtPayload } from '@/lib/auth';
 import { validateData, handleApiError } from '@/lib/api-utils';
 import { Review, Product, User, RepairService } from '@/models';
 
@@ -94,7 +94,8 @@ async function updateReview(req: NextRequest, user: any, { params }: { params: {
         case 'product':
           target = await Product.findById(review.targetId);
           if (target) {
-            const currentRatings = target.ratings;
+            // Use type assertion to access ratings property
+            const currentRatings = (target as any).ratings || { average: 0, count: 1 };
             const newAverage = (currentRatings.average * currentRatings.count + ratingsDiff) / currentRatings.count;
             
             await Product.findByIdAndUpdate(review.targetId, {
@@ -105,7 +106,8 @@ async function updateReview(req: NextRequest, user: any, { params }: { params: {
         case 'service':
           target = await RepairService.findById(review.targetId);
           if (target) {
-            const currentRatings = target.ratings;
+            // Use type assertion to access ratings property
+            const currentRatings = (target as any).ratings || { average: 0, count: 1 };
             const newAverage = (currentRatings.average * currentRatings.count + ratingsDiff) / currentRatings.count;
             
             await RepairService.findByIdAndUpdate(review.targetId, {
@@ -117,7 +119,8 @@ async function updateReview(req: NextRequest, user: any, { params }: { params: {
         case 'seller':
           target = await User.findById(review.targetId);
           if (target) {
-            const currentRatings = target.ratings;
+            // Use type assertion to access ratings property
+            const currentRatings = (target as any).ratings || { average: 0, count: 1 };
             const newAverage = (currentRatings.average * currentRatings.count + ratingsDiff) / currentRatings.count;
             
             await User.findByIdAndUpdate(review.targetId, {
@@ -168,62 +171,74 @@ async function deleteReview(req: NextRequest, user: any, { params }: { params: {
     switch (review.targetType) {
       case 'product':
         target = await Product.findById(review.targetId);
-        if (target && target.ratings.count > 1) {
-          // Calculate new average by removing this review's rating
-          const currentTotal = target.ratings.average * target.ratings.count;
-          const newTotal = currentTotal - rating;
-          const newCount = target.ratings.count - 1;
-          const newAverage = newTotal / newCount;
-          
-          await Product.findByIdAndUpdate(review.targetId, {
-            'ratings.average': newAverage,
-            'ratings.count': newCount
-          });
-        } else if (target) {
-          // If this was the only review, reset ratings
-          await Product.findByIdAndUpdate(review.targetId, {
-            'ratings.average': 0,
-            'ratings.count': 0
-          });
+        if (target) {
+          // Use type assertion to access ratings property
+          const ratings = (target as any).ratings;
+          if (ratings && ratings.count > 1) {
+            // Calculate new average by removing this review's rating
+            const currentTotal = ratings.average * ratings.count;
+            const newTotal = currentTotal - rating;
+            const newCount = ratings.count - 1;
+            const newAverage = newTotal / newCount;
+            
+            await Product.findByIdAndUpdate(review.targetId, {
+              'ratings.average': newAverage,
+              'ratings.count': newCount
+            });
+          } else {
+            // If this was the only review, reset ratings
+            await Product.findByIdAndUpdate(review.targetId, {
+              'ratings.average': 0,
+              'ratings.count': 0
+            });
+          }
         }
         break;
       case 'service':
         target = await RepairService.findById(review.targetId);
-        if (target && target.ratings.count > 1) {
-          const currentTotal = target.ratings.average * target.ratings.count;
-          const newTotal = currentTotal - rating;
-          const newCount = target.ratings.count - 1;
-          const newAverage = newTotal / newCount;
-          
-          await RepairService.findByIdAndUpdate(review.targetId, {
-            'ratings.average': newAverage,
-            'ratings.count': newCount
-          });
-        } else if (target) {
-          await RepairService.findByIdAndUpdate(review.targetId, {
-            'ratings.average': 0,
-            'ratings.count': 0
-          });
+        if (target) {
+          // Use type assertion to access ratings property
+          const ratings = (target as any).ratings;
+          if (ratings && ratings.count > 1) {
+            const currentTotal = ratings.average * ratings.count;
+            const newTotal = currentTotal - rating;
+            const newCount = ratings.count - 1;
+            const newAverage = newTotal / newCount;
+            
+            await RepairService.findByIdAndUpdate(review.targetId, {
+              'ratings.average': newAverage,
+              'ratings.count': newCount
+            });
+          } else {
+            await RepairService.findByIdAndUpdate(review.targetId, {
+              'ratings.average': 0,
+              'ratings.count': 0
+            });
+          }
         }
         break;
       case 'repairer':
       case 'seller':
         target = await User.findById(review.targetId);
-        if (target && target.ratings.count > 1) {
-          const currentTotal = target.ratings.average * target.ratings.count;
-          const newTotal = currentTotal - rating;
-          const newCount = target.ratings.count - 1;
-          const newAverage = newTotal / newCount;
-          
-          await User.findByIdAndUpdate(review.targetId, {
-            'ratings.average': newAverage,
-            'ratings.count': newCount
-          });
-        } else if (target) {
-          await User.findByIdAndUpdate(review.targetId, {
-            'ratings.average': 0,
-            'ratings.count': 0
-          });
+        if (target) {
+          // Use type assertion to access ratings property
+          const ratings = (target as any).ratings;
+          if (ratings && ratings.count > 1) {
+            const currentTotal = ratings.average * ratings.count;
+            const newTotal = currentTotal - rating;
+            const newCount = ratings.count - 1;
+            const newAverage = newTotal / newCount;
+            
+            await User.findByIdAndUpdate(review.targetId, {
+              'ratings.average': newAverage,
+              'ratings.count': newCount
+            });
+          } else {
+            await User.findByIdAndUpdate(review.targetId, {
+              'ratings.average': 0,
+              'ratings.count': 0
+            });
+          }
         }
         break;
     }
@@ -319,6 +334,33 @@ async function respondToReview(req: NextRequest, user: any, { params }: { params
   } catch (error) {
     return handleApiError(error);
   }
+}
+
+/**
+ * Wrapper for updateReview to make it compatible with withAuth
+ */
+function updateReviewWrapper(req: NextRequest, user?: JwtPayload) {
+  // Extract params from the URL if needed
+  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
+  return updateReview(req, user, { params });
+}
+
+/**
+ * Wrapper for deleteReview to make it compatible with withAuth
+ */
+function deleteReviewWrapper(req: NextRequest, user?: JwtPayload) {
+  // Extract params from the URL if needed
+  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
+  return deleteReview(req, user, { params });
+}
+
+/**
+ * Wrapper for respondToReview to make it compatible with withAuth
+ */
+function respondToReviewWrapper(req: NextRequest, user?: JwtPayload) {
+  // Extract params from the URL if needed
+  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
+  return respondToReview(req, user, { params });
 }
 
 export const GET = getReview;

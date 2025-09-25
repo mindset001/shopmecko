@@ -36,7 +36,7 @@ const SystemSettings = dynamic(() => import('@/components/admin/system-settings'
 });
 
 export default function AdminDashboard() {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   // Using state for active tab and keeping the setter for future use
@@ -51,7 +51,7 @@ export default function AdminDashboard() {
       await new Promise(resolve => setTimeout(resolve, 500));
       
       // Check if we're authenticated via the context
-      const isAuthenticated = !!user && !!token;
+      const isAuthenticated = !!user;
       const userRole = user?.role || '';
       
       console.log("IsAuthenticated:", isAuthenticated);
@@ -69,7 +69,7 @@ export default function AdminDashboard() {
     };
     
     checkAuth();
-  }, [user, token, router]);
+  }, [user, router]);
 
   if (isLoading) {
     return (

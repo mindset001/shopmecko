@@ -128,7 +128,7 @@ export default function AdminSettingsPage() {
       heading="System Settings"
       description="Manage system-wide settings, user accounts, and platform configuration."
       tabs={tabs}
-      onSave={handleSave}
+      onSave={() => handleSave(formData)}
       isSaving={isSaving}
       saveSuccess={saveSuccess}
       saveError={saveError}

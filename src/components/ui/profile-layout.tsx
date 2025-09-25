@@ -8,34 +8,34 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/context/AuthContext';
 import DashboardHeader from '@/components/ui/dashboard-header';
 
-interface ProfileLayoutProps {
+interface ProfileLayoutProps<T extends Record<string, any> = Record<string, any>> {
   userType: 'vehicle-owner' | 'repairer' | 'seller' | 'admin';
   children?: React.ReactNode;
-  profileData: unknown;
-  onSave: (data: unknown) => Promise<void>;
+  profileData: T;
+  onSave: (data: T) => Promise<void>;
   isLoading?: boolean;
 }
 
-export default function ProfileLayout({
+export default function ProfileLayout<T extends Record<string, any>>({
   userType,
   children,
   profileData,
   onSave,
   isLoading = false
-}: ProfileLayoutProps) {
+}: ProfileLayoutProps<T>) {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<Record<string, any>>(profileData as Record<string, any>);
+  const [formData, setFormData] = useState<T>(profileData);
   const [isSaving, setIsSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev: Record<string, any>) => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value
-    }));
+    }) as T);
   };
 
   const handleSave = async () => {
@@ -61,7 +61,7 @@ export default function ProfileLayout({
   };
 
   const handleCancel = () => {
-    setFormData(profileData as Record<string, any>);
+    setFormData(profileData);
     setIsEditing(false);
     setErrorMessage('');
   };

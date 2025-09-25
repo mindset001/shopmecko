@@ -53,7 +53,7 @@ export default function WorkshopProfile() {
         setEditableProfile(mockProfile);
         setIsLoading(false);
       } catch (err: unknown) {
-        setError(err.message || 'An error occurred while fetching profile');
+        setError( 'An error occurred while fetching profile');
         setIsLoading(false);
       }
     };
