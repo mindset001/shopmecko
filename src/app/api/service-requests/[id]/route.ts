@@ -49,10 +49,21 @@ const completeServiceRequestSchema = z.object({
 /**
  * GET: Get a specific service request
  */
-async function getServiceRequest(req: NextRequest, user?: JwtPayload) {
-  // Extract the service request ID from the URL path
-  const path = req.nextUrl.pathname;
-  const serviceRequestId = path.split('/').pop() || '';
+async function getServiceRequest(
+  req: NextRequest, 
+  user?: JwtPayload, 
+  context?: { params: Promise<{ id: string }> }
+) {
+  // Extract the service request ID from context or URL path
+  let serviceRequestId = '';
+  if (context?.params) {
+    const params = await context.params;
+    serviceRequestId = params.id;
+  } else {
+    // Fallback to URL parsing
+    const path = req.nextUrl.pathname;
+    serviceRequestId = path.split('/').pop() || '';
+  }
   
   try {
     await connectToDatabase();
@@ -100,10 +111,21 @@ async function getServiceRequest(req: NextRequest, user?: JwtPayload) {
 /**
  * PUT: Update a service request
  */
-async function updateServiceRequest(req: NextRequest, user?: JwtPayload) {
-  // Extract the service request ID from the URL path
-  const path = req.nextUrl.pathname;
-  const serviceRequestId = path.split('/').pop() || '';
+async function updateServiceRequest(
+  req: NextRequest, 
+  user?: JwtPayload, 
+  context?: { params: Promise<{ id: string }> }
+) {
+  // Extract the service request ID from context or URL path
+  let serviceRequestId = '';
+  if (context?.params) {
+    const params = await context.params;
+    serviceRequestId = params.id;
+  } else {
+    // Fallback to URL parsing
+    const path = req.nextUrl.pathname;
+    serviceRequestId = path.split('/').pop() || '';
+  }
   
   try {
     await connectToDatabase();
@@ -202,10 +224,21 @@ async function updateServiceRequest(req: NextRequest, user?: JwtPayload) {
 /**
  * POST: Complete a service request and create maintenance record
  */
-async function completeServiceRequest(req: NextRequest, user?: JwtPayload) {
-  // Extract the service request ID from the URL path
-  const path = req.nextUrl.pathname;
-  const serviceRequestId = path.split('/').pop() || '';
+async function completeServiceRequest(
+  req: NextRequest, 
+  user?: JwtPayload, 
+  context?: { params: Promise<{ id: string }> }
+) {
+  // Extract the service request ID from context or URL path
+  let serviceRequestId = '';
+  if (context?.params) {
+    const params = await context.params;
+    serviceRequestId = params.id;
+  } else {
+    // Fallback to URL parsing
+    const path = req.nextUrl.pathname;
+    serviceRequestId = path.split('/').pop() || '';
+  }
   
   try {
     await connectToDatabase();
@@ -292,10 +325,21 @@ async function completeServiceRequest(req: NextRequest, user?: JwtPayload) {
 /**
  * DELETE: Cancel a service request
  */
-async function cancelServiceRequest(req: NextRequest, user?: JwtPayload) {
-  // Extract the service request ID from the URL path
-  const path = req.nextUrl.pathname;
-  const serviceRequestId = path.split('/').pop() || '';
+async function cancelServiceRequest(
+  req: NextRequest, 
+  user?: JwtPayload, 
+  context?: { params: Promise<{ id: string }> }
+) {
+  // Extract the service request ID from context or URL path
+  let serviceRequestId = '';
+  if (context?.params) {
+    const params = await context.params;
+    serviceRequestId = params.id;
+  } else {
+    // Fallback to URL parsing
+    const path = req.nextUrl.pathname;
+    serviceRequestId = path.split('/').pop() || '';
+  }
   
   try {
     await connectToDatabase();
@@ -362,9 +406,42 @@ async function cancelServiceRequest(req: NextRequest, user?: JwtPayload) {
   }
 }
 
+// Wrapper functions to handle Next.js 13+ route parameters
+function getServiceRequestWrapper(
+  req: NextRequest, 
+  user?: JwtPayload, 
+  context?: { params: Promise<{ id: string }> }
+) {
+  return getServiceRequest(req, user, context);
+}
+
+function updateServiceRequestWrapper(
+  req: NextRequest, 
+  user?: JwtPayload, 
+  context?: { params: Promise<{ id: string }> }
+) {
+  return updateServiceRequest(req, user, context);
+}
+
+function completeServiceRequestWrapper(
+  req: NextRequest, 
+  user?: JwtPayload, 
+  context?: { params: Promise<{ id: string }> }
+) {
+  return completeServiceRequest(req, user, context);
+}
+
+function cancelServiceRequestWrapper(
+  req: NextRequest, 
+  user?: JwtPayload, 
+  context?: { params: Promise<{ id: string }> }
+) {
+  return cancelServiceRequest(req, user, context);
+}
+
 export const GET = withAuth(getServiceRequestWrapper, { requiresAuth: true });
 export const PUT = withAuth(updateServiceRequestWrapper, { requiresAuth: true });
-export const POST = withAuth(completeServiceRequest, { 
+export const POST = withAuth(completeServiceRequestWrapper, { 
   requiresAuth: true,
   allowedRoles: ['repairer'] 
 });

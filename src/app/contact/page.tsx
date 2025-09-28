@@ -145,10 +145,10 @@ export default function Contact() {
                       <div>
                         <h3 className="font-bold mb-1">Address</h3>
                         <p className="text-muted-foreground">
-                          123 Auto Street<br />
-                          Mechanic City, MC 12345<br />
-                          United States
-                        </p>
+                          Eleganza shopping center<br />
+                          VGC Ajah, Lagos<br />
+                          Nigeria
+                        </p>  
                       </div>
                     </div>
 
@@ -159,9 +159,9 @@ export default function Contact() {
                         </svg>
                       </div>
                       <div>
-                        <h3 className="font-bold mb-1">Phone</h3>
-                        <p className="text-muted-foreground">+1 (555) 123-4567</p>
-                        <p className="text-muted-foreground">+1 (555) 987-6543</p>
+                        <h3 className="font-bold mb-1">Phone</h3>08164499953
+                        <p className="text-muted-foreground">+234 (816) 449-9953</p>
+                        <p className="text-muted-foreground">+234 (816) 007-1243</p>
                       </div>
                     </div>
 

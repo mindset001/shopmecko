@@ -1,12 +1,61 @@
-{/* For Vehicle Owners */}
-<section className="py-20 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800" id="vehicle-owners">
-  <div className="container mx-auto px-4">
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-      <div 
-        id="owner-content" 
-        data-scroll
-        className={`transition-all duration-700 ${isVisible['owner-content'] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
-      >
+'use client';
+
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import TestimonialCard from '@/components/ui/testimonial-card';
+
+interface VisibilityState {
+  [key: string]: boolean;
+}
+
+export default function ServiceSections() {
+  const [isVisible, setIsVisible] = useState<VisibilityState>({
+    'owner-content': false,
+    'owner-image': false,
+    'mechanic-content': false,
+    'mechanic-image': false,
+    'seller-content': false,
+    'seller-image': false,
+    'testimonial-1': false,
+    'testimonial-2': false,
+    'testimonial-3': false,
+  });
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.target.id) {
+            setIsVisible(prev => ({
+              ...prev,
+              [entry.target.id]: entry.isIntersecting
+            }));
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    // Observe elements
+    const elements = document.querySelectorAll('[data-scroll]');
+    elements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <>
+      {/* For Vehicle Owners */}
+      <section className="py-20 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800" id="vehicle-owners">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div 
+              id="owner-content" 
+              data-scroll
+              className={`transition-all duration-700 ${isVisible['owner-content'] ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
+            >
         <h2 className="text-4xl font-bold mb-6 text-blue-600 dark:text-blue-400">For Vehicle Owners</h2>
         <p className="text-lg mb-8 text-gray-700 dark:text-gray-300">
           ShopMeco offers vehicle owners a streamlined way to maintain and service their vehicles. From finding trusted mechanics to tracking maintenance history, we make vehicle ownership simpler.
@@ -276,10 +325,9 @@
         className={`transition-all duration-700 ${isVisible['testimonial-1'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <TestimonialCard
-          quote="ShopMeco has completely changed how I maintain my vehicles. Finding reliable mechanics used to be a nightmare, but now it&apos;s just a few clicks away."
-          name="Michael Johnson"
+          quote="ShopMeco has completely changed how I maintain my vehicles. Finding reliable mechanics used to be a nightmare, but now it's just a few clicks away."
+          author="Michael Johnson"
           role="Vehicle Owner"
-          image="/hero-car-service.jpg"
         />
       </div>
       
@@ -290,9 +338,8 @@
       >
         <TestimonialCard
           quote="As a mechanic with my own shop, ShopMeco has helped me reach more customers and grow my business by 40% in just six months."
-          name="Sarah Williams"
+          author="Sarah Williams"
           role="Service Provider"
-          image="/car-mechanic-service.jpg"
         />
       </div>
       
@@ -303,9 +350,8 @@
       >
         <TestimonialCard
           quote="My parts business has thrived since joining ShopMeco. The platform connects us directly with customers who need exactly what we sell."
-          name="David Chen"
+          author="David Chen"
           role="Parts Seller"
-          image="/car-parts.jpg"
         />
       </div>
     </div>
@@ -329,3 +375,6 @@
     </div>
   </div>
 </section>
+    </>
+  );
+}

@@ -20,9 +20,13 @@ const updateRepairServiceSchema = z.object({
 /**
  * GET: Get a specific repair service
  */
-async function getRepairService(req: NextRequest, { params }: { params: { id: string } }) {
+async function getRepairService(
+  req: NextRequest, 
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectToDatabase();
+    const params = await context.params;
     const serviceId = params.id;
     
     const service = await RepairService.findById(serviceId)
@@ -45,9 +49,14 @@ async function getRepairService(req: NextRequest, { params }: { params: { id: st
  * PUT: Update a specific repair service
  * Only the owner repairer or admin can update the service
  */
-async function updateRepairService(req: NextRequest, user: any, { params }: { params: { id: string } }) {
+async function updateRepairService(
+  req: NextRequest, 
+  user: any, 
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectToDatabase();
+    const params = await context.params;
     const serviceId = params.id;
     
     // Find the service
@@ -93,9 +102,14 @@ async function updateRepairService(req: NextRequest, user: any, { params }: { pa
  * DELETE: Delete a specific repair service
  * Only the owner repairer or admin can delete the service
  */
-async function deleteRepairService(req: NextRequest, user: any, { params }: { params: { id: string } }) {
+async function deleteRepairService(
+  req: NextRequest, 
+  user: any, 
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectToDatabase();
+    const params = await context.params;
     const serviceId = params.id;
     
     // Find the service
@@ -141,19 +155,35 @@ async function deleteRepairService(req: NextRequest, user: any, { params }: { pa
 /**
  * Wrapper for updateRepairService to make it compatible with withAuth
  */
-function updateRepairServiceWrapper(req: NextRequest, user?: JwtPayload) {
-  // Extract params from the URL if needed
-  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
-  return updateRepairService(req, user, { params });
+function updateRepairServiceWrapper(
+  req: NextRequest, 
+  user?: JwtPayload, 
+  context?: { params: Promise<{ id: string }> }
+) {
+  if (!context) {
+    // Extract params from the URL if context is not provided
+    const id = req.nextUrl.pathname.split('/').pop() || '';
+    const params = Promise.resolve({ id });
+    context = { params };
+  }
+  return updateRepairService(req, user, context);
 }
 
 /**
  * Wrapper for deleteRepairService to make it compatible with withAuth
  */
-function deleteRepairServiceWrapper(req: NextRequest, user?: JwtPayload) {
-  // Extract params from the URL if needed
-  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
-  return deleteRepairService(req, user, { params });
+function deleteRepairServiceWrapper(
+  req: NextRequest, 
+  user?: JwtPayload, 
+  context?: { params: Promise<{ id: string }> }
+) {
+  if (!context) {
+    // Extract params from the URL if context is not provided
+    const id = req.nextUrl.pathname.split('/').pop() || '';
+    const params = Promise.resolve({ id });
+    context = { params };
+  }
+  return deleteRepairService(req, user, context);
 }
 
 export const GET = getRepairService;
