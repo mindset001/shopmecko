@@ -21,9 +21,13 @@ const responseSchema = z.object({
 /**
  * GET: Get a specific review
  */
-async function getReview(req: NextRequest, { params }: { params: { id: string } }) {
+async function getReview(
+  req: NextRequest, 
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectToDatabase();
+    const params = await context.params;
     const reviewId = params.id;
     
     const review = await Review.findById(reviewId)
@@ -46,9 +50,14 @@ async function getReview(req: NextRequest, { params }: { params: { id: string } 
  * PUT: Update a specific review
  * Only the original reviewer can update their review
  */
-async function updateReview(req: NextRequest, user: any, { params }: { params: { id: string } }) {
+async function updateReview(
+  req: NextRequest, 
+  user: any, 
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectToDatabase();
+    const params = await context.params;
     const reviewId = params.id;
     
     // Find the review
@@ -141,9 +150,14 @@ async function updateReview(req: NextRequest, user: any, { params }: { params: {
  * DELETE: Delete a specific review
  * Only the original reviewer or an admin can delete a review
  */
-async function deleteReview(req: NextRequest, user: any, { params }: { params: { id: string } }) {
+async function deleteReview(
+  req: NextRequest, 
+  user: any, 
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectToDatabase();
+    const params = await context.params;
     const reviewId = params.id;
     
     // Find the review
@@ -259,9 +273,14 @@ async function deleteReview(req: NextRequest, user: any, { params }: { params: {
  * POST: Add a response to a review
  * Only the target (seller/repairer) or an admin can respond to a review
  */
-async function respondToReview(req: NextRequest, user: any, { params }: { params: { id: string } }) {
+async function respondToReview(
+  req: NextRequest, 
+  user: any, 
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await connectToDatabase();
+    const params = await context.params;
     const reviewId = params.id;
     
     // Find the review
@@ -339,28 +358,52 @@ async function respondToReview(req: NextRequest, user: any, { params }: { params
 /**
  * Wrapper for updateReview to make it compatible with withAuth
  */
-function updateReviewWrapper(req: NextRequest, user?: JwtPayload) {
-  // Extract params from the URL if needed
-  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
-  return updateReview(req, user, { params });
+function updateReviewWrapper(
+  req: NextRequest, 
+  user?: JwtPayload, 
+  context?: { params: Promise<{ id: string }> }
+) {
+  if (!context) {
+    // Extract params from the URL if context is not provided
+    const id = req.nextUrl.pathname.split('/').pop() || '';
+    const params = Promise.resolve({ id });
+    context = { params };
+  }
+  return updateReview(req, user, context);
 }
 
 /**
  * Wrapper for deleteReview to make it compatible with withAuth
  */
-function deleteReviewWrapper(req: NextRequest, user?: JwtPayload) {
-  // Extract params from the URL if needed
-  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
-  return deleteReview(req, user, { params });
+function deleteReviewWrapper(
+  req: NextRequest, 
+  user?: JwtPayload, 
+  context?: { params: Promise<{ id: string }> }
+) {
+  if (!context) {
+    // Extract params from the URL if context is not provided
+    const id = req.nextUrl.pathname.split('/').pop() || '';
+    const params = Promise.resolve({ id });
+    context = { params };
+  }
+  return deleteReview(req, user, context);
 }
 
 /**
  * Wrapper for respondToReview to make it compatible with withAuth
  */
-function respondToReviewWrapper(req: NextRequest, user?: JwtPayload) {
-  // Extract params from the URL if needed
-  const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
-  return respondToReview(req, user, { params });
+function respondToReviewWrapper(
+  req: NextRequest, 
+  user?: JwtPayload, 
+  context?: { params: Promise<{ id: string }> }
+) {
+  if (!context) {
+    // Extract params from the URL if context is not provided
+    const id = req.nextUrl.pathname.split('/').pop() || '';
+    const params = Promise.resolve({ id });
+    context = { params };
+  }
+  return respondToReview(req, user, context);
 }
 
 export const GET = getReview;
